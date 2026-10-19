@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guias — LocaLens</title>
+  <link rel="icon" href="/assets/logo-mark.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="guias">
+  <main id="conteudo" class="wrap">
+    <div class="page-head"><h1>Guias turísticos</h1></div>
+    <form id="guide-filters" class="search-box">
+      <div class="search-row">
+        <input type="search" name="q" placeholder="Nome, especialidade ou região">
+        <button class="btn-primary" type="submit">Filtrar</button>
+      </div>
+      <div class="filters">
+        <div class="field"><label>Região</label><input name="region"></div>
+        <div class="field"><label>Idiomas</label><input name="languages"></div>
+        <div class="field"><label>Especialidades</label><input name="specialties"></div>
+        <div class="field"><label>Tipos de passeio</label><input name="tourTypes"></div>
+        <div class="field"><label>Preço mín.</label><input name="guidePriceMin" type="number"></div>
+        <div class="field"><label>Preço máx.</label><input name="guidePriceMax" type="number"></div>
+        <div class="field"><label>Ordenar</label>
+          <select name="sort"><option value="relevance">Relevância</option><option value="name">Nome</option></select>
+        </div>
+      </div>
+      <button class="btn-ghost" type="button" data-clear>Limpar filtros</button>
+    </form>
+    <p class="status" id="guide-status"></p>
+    <div class="grid-cards" id="guide-results"></div>
+  </main>
+  <script type="module" src="/js/layout.js"></script>
+  <script type="module">
+    import { bindListing } from "/js/listing.js";
+    bindListing({ type: "guide", formId: "guide-filters", resultsId: "guide-results", statusId: "guide-status" });
+  </script>
+</body>
+</html>

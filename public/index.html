@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LocaLens — descubra lugares, hotéis, guias e agências</title>
+  <link rel="icon" href="/assets/logo-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="home">
+  <main id="conteudo">
+    <section class="hero">
+      <div class="wrap">
+        <h1>Enxergue o destino com a lente de quem vive o lugar.</h1>
+        <p class="lede">Pesquise hotéis, guias e agências cadastrados na LocaLens. Endereços, ruas e atrações entram pelo mapa com dados do OpenStreetMap — sem inventar disponibilidade ou avaliações.</p>
+        <form class="search-box" id="home-search">
+          <div class="search-row">
+            <input type="search" name="q" placeholder="Busque hotel, guia, agência, bairro ou destino" aria-label="Pesquisar">
+            <button class="btn-primary" type="submit">Pesquisar</button>
+          </div>
+          <div class="chip-row">
+            <label class="chip"><input type="checkbox" name="types" value="hotel" checked> Hotéis</label>
+            <label class="chip"><input type="checkbox" name="types" value="guide" checked> Guias</label>
+            <label class="chip"><input type="checkbox" name="types" value="agency" checked> Agências</label>
+            <a class="chip" href="/mapa.html">Abrir mapa</a>
+          </div>
+        </form>
+        <p class="status" id="home-status"></p>
+        <div class="grid-cards" id="home-results"></div>
+      </div>
+    </section>
+    <section class="wrap section">
+      <h2>Explore</h2>
+      <div class="grid-cards">
+        <a class="card" href="/hoteis.html"><div class="card-body"><h3>Hotéis</h3><p>Filtros por cidade, categoria, comodidades e acessibilidade com dados cadastrados.</p></div></a>
+        <a class="card" href="/guias.html"><div class="card-body"><h3>Guias turísticos</h3><p>Idiomas, especialidades e regiões de atuação informadas pelos próprios guias.</p></div></a>
+        <a class="card" href="/agencias.html"><div class="card-body"><h3>Agências</h3><p>Destinos, serviços e perfis institucionais públicos.</p></div></a>
+        <a class="card" href="/mapa.html"><div class="card-body"><h3>Mapa</h3><p>Busque ruas, bairros, hotéis e atrações no OpenStreetMap.</p></div></a>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="/js/layout.js"></script>
+  <script type="module" src="/js/home.js"></script>
+</body>
+</html>

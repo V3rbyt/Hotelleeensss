@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Recuperar senha — LocaLens</title>
+  <link rel="icon" href="/assets/logo-mark.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <main id="conteudo">
+    <div class="panel auth-card">
+      <div data-back="/login.html"></div>
+      <h1>Recuperar acesso</h1>
+      <div id="form-alert" class="hidden"></div>
+      <form id="recover-form" class="form-grid">
+        <div class="field"><label>E-mail da conta</label><input type="email" name="email" required></div>
+        <button class="btn-primary" type="submit">Gerar recuperação</button>
+      </form>
+      <form id="reset-form" class="form-grid" style="margin-top:20px">
+        <div class="field"><label>Token</label><input name="token" required></div>
+        <div class="field"><label>Nova senha</label><input type="password" name="password" required minlength="8"></div>
+        <button class="btn-primary" type="submit">Definir nova senha</button>
+      </form>
+    </div>
+  </main>
+  <script type="module" src="/js/layout.js"></script>
+  <script type="module" src="/js/auth-forms.js"></script>
+</body>
+</html>

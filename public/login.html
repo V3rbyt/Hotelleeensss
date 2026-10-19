@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar — LocaLens</title>
+  <link rel="icon" href="/assets/logo-mark.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="login">
+  <main id="conteudo">
+    <form class="panel auth-card" id="login-form">
+      <div data-back="/"></div>
+      <h1>Entrar</h1>
+      <div id="form-alert" class="hidden"></div>
+      <div class="form-grid">
+        <div class="field"><label>E-mail</label><input type="email" name="email" required></div>
+        <div class="field"><label>Senha</label><input type="password" name="password" required></div>
+        <button class="btn-primary" type="submit">Entrar</button>
+        <p><a href="/recuperar.html">Esqueci a senha</a> · <a href="/cadastro.html">Criar conta</a></p>
+      </div>
+    </form>
+  </main>
+  <script type="module" src="/js/layout.js"></script>
+  <script type="module" src="/js/auth-forms.js"></script>
+</body>
+</html>

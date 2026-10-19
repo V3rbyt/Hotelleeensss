@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cadastro — LocaLens</title>
+  <link rel="icon" href="/assets/logo-mark.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="cadastro">
+  <main id="conteudo">
+    <form class="panel auth-card" id="register-form">
+      <div data-back="/"></div>
+      <h1>Criar conta</h1>
+      <p class="meta">O CPF/CNPJ, quando pedido, é validado só matematicamente. Não comprovamos identidade oficial.</p>
+      <div id="form-alert" class="hidden"></div>
+      <div class="field">
+        <label>Tipo de conta</label>
+        <select name="role">
+          <option value="traveler">Viajante</option>
+          <option value="guide">Guia turístico</option>
+          <option value="agency">Agência de turismo</option>
+          <option value="hotel">Hotel / hospedagem</option>
+        </select>
+      </div>
+      <div class="form-grid">
+        <div class="field" data-role-field="traveler,guide"><label>Nome</label><input name="displayName"></div>
+        <div class="field"><label>E-mail</label><input type="email" name="email" required></div>
+        <div class="field"><label>Senha</label><input type="password" name="password" required minlength="8"></div>
+        <div class="field"><label>Telefone</label><input name="phone"></div>
+        <div class="field" data-role-field="traveler,guide"><label>CPF (opcional para viajante)</label><input name="cpf" inputmode="numeric"></div>
+        <div class="field hidden" data-role-field="agency,hotel"><label>CNPJ</label><input name="cnpj" required></div>
+        <div class="field hidden" data-role-field="guide"><label>Nome profissional</label><input name="professionalName"></div>
+        <div class="field hidden" data-role-field="guide"><label>Biografia</label><textarea name="bio"></textarea></div>
+        <div class="field hidden" data-role-field="guide"><label>Idiomas</label><input name="languages" placeholder="Português, Inglês"></div>
+        <div class="field hidden" data-role-field="guide"><label>Especialidades</label><input name="specialties"></div>
+        <div class="field hidden" data-role-field="guide"><label>Regiões</label><input name="regions"></div>
+        <div class="field hidden" data-role-field="guide"><label>Tipos de passeio</label><input name="tourTypes"></div>
+        <div class="field hidden" data-role-field="guide"><label>Serviços</label><input name="services"></div>
+        <div class="field hidden" data-role-field="guide"><label>Qualificações</label><textarea name="qualifications"></textarea></div>
+        <div class="field hidden" data-role-field="agency"><label>Razão social</label><input name="legalName"></div>
+        <div class="field hidden" data-role-field="agency"><label>Nome fantasia</label><input name="tradeName"></div>
+        <div class="field hidden" data-role-field="agency,hotel"><label>Descrição</label><textarea name="description"></textarea></div>
+        <div class="field hidden" data-role-field="agency,hotel"><label>Endereço</label><input name="address"></div>
+        <div class="field hidden" data-role-field="guide,agency,hotel"><label>Cidade</label><input name="city"></div>
+        <div class="field hidden" data-role-field="guide,agency,hotel"><label>Estado</label><input name="state"></div>
+        <div class="field hidden" data-role-field="agency"><label>Destinos atendidos</label><input name="destinations"></div>
+        <div class="field hidden" data-role-field="agency"><label>Tipo de viagem</label><input name="travelTypes"></div>
+        <div class="field hidden" data-role-field="agency"><label>Registro profissional (ex. Cadastur)</label><input name="professionalRegistry"></div>
+        <div class="field hidden" data-role-field="agency,hotel"><label>Site</label><input name="website"></div>
+        <div class="field hidden" data-role-field="hotel"><label>Nome do estabelecimento</label><input name="hotelName"></div>
+        <div class="field hidden" data-role-field="hotel"><label>Bairro</label><input name="neighborhood"></div>
+        <div class="field hidden" data-role-field="hotel"><label>Categoria</label><input name="category"></div>
+        <div class="field hidden" data-role-field="hotel"><label>Comodidades</label><input name="amenities"></div>
+        <div class="field hidden" data-role-field="hotel"><label>Acessibilidade</label><input name="accessibility"></div>
+        <div class="field hidden" data-role-field="hotel"><label>E-mail comercial público</label><input name="publicEmail"></div>
+        <label class="chip"><input type="checkbox" name="acceptTerms" required> Aceito os <a href="/termos.html">termos</a></label>
+        <label class="chip"><input type="checkbox" name="acceptPrivacy" required> Aceito a <a href="/privacidade.html">política de privacidade</a></label>
+        <button class="btn-primary" type="submit">Cadastrar</button>
+      </div>
+    </form>
+  </main>
+  <script type="module" src="/js/layout.js"></script>
+  <script type="module" src="/js/auth-forms.js"></script>
+</body>
+</html>

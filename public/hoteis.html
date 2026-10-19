@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotéis — LocaLens</title>
+  <link rel="icon" href="/assets/logo-mark.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="hoteis">
+  <main id="conteudo" class="wrap">
+    <div class="page-head"><h1>Hotéis</h1></div>
+    <form id="hotel-filters" class="search-box">
+      <div class="search-row">
+        <input type="search" name="q" placeholder="Nome, cidade, bairro ou endereço">
+        <button class="btn-primary" type="submit">Filtrar</button>
+      </div>
+      <div class="filters">
+        <div class="field"><label>Cidade / bairro</label><input name="city"></div>
+        <div class="field"><label>Categoria</label><input name="category" placeholder="ex. pousada"></div>
+        <div class="field"><label>Preço mínimo cadastrado</label><input name="priceMin" type="number" min="0"></div>
+        <div class="field"><label>Preço máximo cadastrado</label><input name="priceMax" type="number" min="0"></div>
+        <div class="field"><label>Comodidades</label><input name="amenities" placeholder="Wi-Fi, piscina"></div>
+        <div class="field"><label>Acessibilidade</label><input name="accessibility"></div>
+        <div class="field"><label>Perto de (texto cadastrado)</label><input name="poi"></div>
+        <div class="field"><label>Ordenar</label>
+          <select name="sort">
+            <option value="relevance">Relevância</option>
+            <option value="name">Nome</option>
+            <option value="price">Preço cadastrado</option>
+            <option value="rating">Avaliações reais</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-ghost" type="button" data-clear>Limpar filtros</button>
+    </form>
+    <p class="status" id="hotel-status"></p>
+    <div class="grid-cards" id="hotel-results"></div>
+  </main>
+  <script type="module" src="/js/layout.js"></script>
+  <script type="module">
+    import { bindListing } from "/js/listing.js";
+    bindListing({ type: "hotel", formId: "hotel-filters", resultsId: "hotel-results", statusId: "hotel-status" });
+  </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Configurações — LocaLens</title>
+  <link rel="icon" href="/assets/logo-mark.svg">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body data-page="config">
+  <main id="conteudo" class="wrap">
+    <div data-back="/"></div>
+    <h1>Configurações da conta</h1>
+    <div id="settings-alert" class="hidden"></div>
+    <div class="settings-layout">
+      <nav class="settings-nav">
+        <a class="active" href="#perfil">Perfil</a>
+        <a href="#seguranca">Conta e segurança</a>
+        <a href="#privacidade">Privacidade</a>
+        <a href="#preferencias">Preferências</a>
+        <a href="#profissional" data-role-panel="guide">Perfil de guia</a>
+        <a href="#agencia" data-role-panel="agency">Perfil da agência</a>
+        <a href="#hotel" data-role-panel="hotel">Hotel</a>
+      </nav>
+      <div>
+        <section id="perfil" class="panel settings-panel">
+          <h2>Perfil</h2>
+          <form id="profile-form" class="form-grid">
+            <div class="field"><label>Nome</label><input name="displayName" required></div>
+            <div class="field"><label>Telefone</label><input name="phone"></div>
+            <div class="field"><label>Foto</label><input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div>
+            <button class="btn-primary" type="submit">Salvar perfil</button>
+          </form>
+        </section>
+        <section id="seguranca" class="panel settings-panel hidden">
+          <h2>Conta e segurança</h2>
+          <form id="email-form" class="form-grid">
+            <div class="field"><label>Novo e-mail</label><input type="email" name="email" required></div>
+            <div class="field"><label>Senha atual</label><input type="password" name="password" required></div>
+            <button class="btn-primary" type="submit">Solicitar troca de e-mail</button>
+          </form>
+          <form id="security-form" class="form-grid" style="margin-top:16px">
+            <div class="field"><label>Senha atual</label><input type="password" name="currentPassword" required></div>
+            <div class="field"><label>Nova senha</label><input type="password" name="newPassword" required minlength="8"></div>
+            <button class="btn-primary" type="submit">Alterar senha</button>
+          </form>
+          <p><a href="/recuperar.html">Recuperar acesso</a></p>
+          <h3>Sessões</h3>
+          <div id="sessions-box"></div>
+        </section>
+        <section id="privacidade" class="panel settings-panel hidden">
+          <h2>Privacidade</h2>
+          <form id="privacy-form" class="form-grid">
+            <label class="chip"><input type="checkbox" name="publicPhone"> Exibir telefone no perfil público</label>
+            <label class="chip"><input type="checkbox" name="publicEmail"> Exibir e-mail no perfil público</label>
+            <label class="chip"><input type="checkbox" name="publicBio"> Exibir biografia</label>
+            <label class="chip"><input type="checkbox" name="marketingConsent"> Consentimento de comunicações</label>
+            <button class="btn-primary" type="submit">Salvar privacidade</button>
+          </form>
+          <p><a href="/privacidade.html">Consultar política de privacidade</a></p>
+          <button class="btn-ghost" type="button" id="lgpd-access">Solicitar cópia dos dados (LGPD)</button>
+          <button class="btn-ghost" type="button" id="lgpd-delete">Solicitar exclusão da conta</button>
+          <pre id="lgpd-out"></pre>
+        </section>
+        <section id="preferencias" class="panel settings-panel hidden">
+          <h2>Preferências</h2>
+          <p class="meta">As notificações são gravadas na conta. O envio de e-mails depende de SMTP.</p>
+          <p>Use o formulário de privacidade para e-mail de produto e marketing.</p>
+          <form id="prefs-note">
+            <label class="chip"><input type="checkbox" name="notifyEmail" form="privacy-form"> Notificações por e-mail</label>
+            <label class="chip"><input type="checkbox" name="notifyProduct" form="privacy-form"> Novidades do produto</label>
+          </form>
+        </section>
+        <section id="profissional" class="panel settings-panel hidden" data-role-panel="guide">
+          <h2>Perfil profissional de guia</h2>
+          <form id="guide-form" class="form-grid">
+            <div class="field"><label>Nome profissional</label><input name="professionalName"></div>
+            <div class="field"><label>Biografia</label><textarea name="bio"></textarea></div>
+            <div class="field"><label>Idiomas</label><input name="languages"></div>
+            <div class="field"><label>Especialidades</label><input name="specialties"></div>
+            <div class="field"><label>Regiões</label><input name="regions"></div>
+            <div class="field"><label>Passeios</label><input name="tourTypes"></div>
+            <div class="field"><label>Serviços</label><input name="services"></div>
+            <div class="field"><label>Qualificações</label><textarea name="qualifications"></textarea></div>
+            <div class="field"><label>Cidade</label><input name="city"></div>
+            <div class="field"><label>Estado</label><input name="state"></div>
+            <div class="field"><label>Preço mín.</label><input name="priceMin" type="number"></div>
+            <div class="field"><label>Preço máx.</label><input name="priceMax" type="number"></div>
+            <div class="field"><label>Latitude (somente se real)</label><input name="lat" type="number" step="any"></div>
+            <div class="field"><label>Longitude</label><input name="lng" type="number" step="any"></div>
+            <div class="field"><label>Foto da galeria</label><input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div>
+            <button class="btn-primary" type="submit">Salvar guia</button>
+          </form>
+        </section>
+        <section id="agencia" class="panel settings-panel hidden" data-role-panel="agency">
+          <h2>Perfil da agência</h2>
+          <form id="agency-form" class="form-grid">
+            <div class="field"><label>Razão social</label><input name="legalName"></div>
+            <div class="field"><label>Nome fantasia</label><input name="tradeName"></div>
+            <div class="field"><label>Descrição</label><textarea name="description"></textarea></div>
+            <div class="field"><label>Endereço</label><input name="address"></div>
+            <div class="field"><label>Cidade</label><input name="city"></div>
+            <div class="field"><label>Estado</label><input name="state"></div>
+            <div class="field"><label>Destinos</label><input name="destinations"></div>
+            <div class="field"><label>Serviços</label><input name="services"></div>
+            <div class="field"><label>Tipos de viagem</label><input name="travelTypes"></div>
+            <div class="field"><label>Site</label><input name="website"></div>
+            <div class="field"><label>Registro profissional</label><input name="professionalRegistry"></div>
+            <div class="field"><label>Latitude</label><input name="lat" type="number" step="any"></div>
+            <div class="field"><label>Longitude</label><input name="lng" type="number" step="any"></div>
+            <div class="field"><label>Logotipo</label><input type="file" name="logo" accept="image/jpeg,image/png,image/webp"></div>
+            <button class="btn-primary" type="submit">Salvar agência</button>
+          </form>
+        </section>
+        <section id="hotel" class="panel settings-panel hidden" data-role-panel="hotel">
+          <h2>Estabelecimento</h2>
+          <form id="hotel-form" class="form-grid">
+            <div class="field"><label>Nome</label><input name="name"></div>
+            <div class="field"><label>Descrição</label><textarea name="description"></textarea></div>
+            <div class="field"><label>Endereço</label><input name="address"></div>
+            <div class="field"><label>Bairro</label><input name="neighborhood"></div>
+            <div class="field"><label>Cidade</label><input name="city"></div>
+            <div class="field"><label>Estado</label><input name="state"></div>
+            <div class="field"><label>Categoria</label><input name="category"></div>
+            <div class="field"><label>Comodidades</label><input name="amenities"></div>
+            <div class="field"><label>Acessibilidade</label><input name="accessibility"></div>
+            <div class="field"><label>Site</label><input name="website"></div>
+            <div class="field"><label>Telefone</label><input name="phone"></div>
+            <div class="field"><label>E-mail público</label><input name="publicEmail"></div>
+            <div class="field"><label>Preço mín. cadastrado</label><input name="priceMin" type="number"></div>
+            <div class="field"><label>Preço máx.</label><input name="priceMax" type="number"></div>
+            <div class="field"><label>Latitude</label><input name="lat" type="number" step="any"></div>
+            <div class="field"><label>Longitude</label><input name="lng" type="number" step="any"></div>
+            <div class="field"><label>Foto</label><input type="file" name="photo" accept="image/jpeg,image/png,image/webp"></div>
+            <button class="btn-primary" type="submit">Salvar hotel</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="/js/layout.js"></script>
+  <script type="module" src="/js/settings-page.js"></script>
+</body>
+</html>
