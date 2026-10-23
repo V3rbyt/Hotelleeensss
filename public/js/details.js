@@ -1,4 +1,4 @@
-import { api, setReturnUrl } from "./api.js";
+import { api, currentUser, loadSession, setReturnUrl } from "./api.js";
 import { mountBack } from "./layout.js";
 
 function esc(value) {
@@ -16,8 +16,83 @@ const root = document.getElementById("detail-root");
 const endpoints = { hotel: `/api/hotels/${id}`, guide: `/api/guides/${id}`, agency: `/api/agencies/${id}` };
 
 function reviewsBlock(reviews) {
-  if (!reviews?.count) return `<p class="meta">Não há avaliações cadastradas neste sistema.</p>`;
-  return `<p>Média ${reviews.average} · ${reviews.count} avaliação(ões) reais no cadastro.</p>`;
+  const summary = reviews?.count
+    ? `<p>Média ${reviews.average} · ${reviews.count} avaliação(ões) reais no cadastro.</p>`
+    : `<p class="meta">Não há avaliações cadastradas neste sistema.</p>`;
+  return `${summary}<div id="reviews-live" class="section-inner"></div>`;
+}
+
+function stars(value) {
+  return "★".repeat(value) + "☆".repeat(5 - value);
+}
+
+async function mountReviews(entityId) {
+  const box = document.getElementById("reviews-live");
+  if (!box) return;
+  const user = currentUser();
+  const render = async () => {
+    const data = await api(`/api/reviews?target_type=${kind}&target_id=${entityId}`);
+    const list = data.reviews
+      .map(
+        (r) => `<article class="card"><div class="card-body">
+          <p><strong>${stars(r.rating)}</strong> — ${esc(r.author)}</p>
+          ${r.comment ? `<p>${esc(r.comment)}</p>` : ""}
+          <p class="meta">${esc(r.createdAt)}</p>
+          ${user && r.authorId === user.id ? `<button type="button" class="btn btn-ghost" data-del="${r.id}">Excluir minha avaliação</button>` : ""}
+        </div></article>`
+      )
+      .join("");
+    const form = user
+      ? `<form id="review-form" class="stack">
+          <label>Nota
+            <select name="rating" required>
+              ${[5, 4, 3, 2, 1].map((n) => `<option value="${n}"${data.mine?.rating === n ? " selected" : ""}>${stars(n)} (${n})</option>`).join("")}
+            </select>
+          </label>
+          <label>Comentário (opcional)
+            <textarea name="comment" maxlength="1200" rows="3">${esc(data.mine?.comment || "")}</textarea>
+          </label>
+          <button type="submit" class="btn">${data.mine ? "Atualizar minha avaliação" : "Avaliar"}</button>
+          <p id="review-status" class="status" hidden></p>
+        </form>`
+      : `<p class="meta"><a href="/login.html">Faça login</a> para deixar uma avaliação.</p>`;
+    box.innerHTML = `${list || ""}${form}`;
+    const formEl = document.getElementById("review-form");
+    if (formEl) {
+      formEl.addEventListener("submit", async (ev) => {
+        ev.preventDefault();
+        const status = document.getElementById("review-status");
+        status.hidden = false;
+        status.textContent = "Enviando...";
+        try {
+          await api("/api/reviews", {
+            method: "POST",
+            body: {
+              targetType: kind,
+              targetId: Number(entityId),
+              rating: Number(new FormData(formEl).get("rating")),
+              comment: new FormData(formEl).get("comment")
+            }
+          });
+          status.textContent = "Avaliação registrada.";
+          await render();
+        } catch (err) {
+          status.textContent = err.message;
+        }
+      });
+    }
+    box.querySelectorAll("[data-del]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        try {
+          await api(`/api/reviews/${btn.dataset.del}`, { method: "DELETE" });
+          await render();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+    });
+  };
+  await render();
 }
 
 function renderHotel(h) {
@@ -114,9 +189,11 @@ async function init() {
   }
   root.innerHTML = `<p class="status">Carregando...</p>`;
   try {
+    await loadSession();
     const data = await api(endpoints[kind]);
     root.innerHTML = kind === "hotel" ? renderHotel(data) : kind === "guide" ? renderGuide(data) : renderAgency(data);
     mountBack(kind === "hotel" ? "/hoteis.html" : kind === "guide" ? "/guias.html" : "/agencias.html");
+    await mountReviews(data.id);
     root.querySelectorAll("[data-src]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const main = document.getElementById("main-photo");

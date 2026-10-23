@@ -26,6 +26,21 @@ async function init() {
     return;
   }
   const me = await api("/api/me");
+  const confirmEmailToken = new URLSearchParams(location.search).get("confirm_email");
+  if (confirmEmailToken) {
+    try {
+      await api("/api/me/email/confirm", { method: "POST", body: { token: confirmEmailToken } });
+      showAlert(alertBox, "E-mail alterado com sucesso.", "success");
+    } catch (err) {
+      showAlert(alertBox, err.message);
+    }
+  } else if (!me.user.emailVerified) {
+    showAlert(
+      alertBox,
+      "Seu e-mail ainda não foi verificado. Abra o link enviado ou use a página de verificação manual: /verificar.html",
+      "success"
+    );
+  }
   fill(profileForm, { displayName: me.user.displayName, phone: me.user.phone || "" });
   if (me.user.settings) {
     privacyForm.publicPhone.checked = Boolean(me.user.settings.public_phone);
@@ -92,8 +107,10 @@ async function init() {
       lng: me.hotel.lng
     });
   }
-  const sessions = await api("/api/auth/sessions");
-  sessionsBox.innerHTML = sessions.sessions
+  if (me.hotel) {
+    await loadEvents();
+  }
+  const sessions = await api("/api/auth/sessions");  sessionsBox.innerHTML = sessions.sessions
     .map(
       (s) => `<p class="meta">${s.current ? "Atual · " : ""}${s.ip || ""} · ${s.createdAt} <button data-sid="${s.id}" type="button">Encerrar</button></p>`
     )
@@ -227,6 +244,84 @@ hotelForm?.addEventListener("submit", async (e) => {
   } catch (err) {
     showAlert(alertBox, err.message);
   }
+});
+
+const eventForm = document.getElementById("event-form");
+const eventsBox = document.getElementById("events-box");
+
+function escEvent(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+async function loadEvents() {
+  if (!eventsBox) return;
+  let events = [];
+  try {
+    ({ events } = await api("/api/me/hotel/events"));
+  } catch {
+    return;
+  }
+  eventsBox.innerHTML = events.length
+    ? events
+        .map(
+          (ev) => `<article class="card"><div class="card-body">
+            <h4>${escEvent(ev.title)}</h4>
+            <p>${escEvent(ev.description || "")}</p>
+            <p class="meta">${escEvent(ev.starts_at || "")} ${ev.ends_at ? "→ " + escEvent(ev.ends_at) : ""} ${escEvent(ev.location || "")}</p>
+            <p><button type="button" class="btn-ghost" data-edit="${ev.id}">Editar</button> <button type="button" class="btn-ghost" data-remove="${ev.id}">Excluir</button></p>
+          </div></article>`
+        )
+        .join("")
+    : "<p class='meta'>Nenhum evento cadastrado.</p>";
+  eventsBox.querySelectorAll("[data-edit]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const ev = events.find((x) => x.id === Number(btn.dataset.edit));
+      eventForm.eventId.value = ev.id;
+      eventForm.title.value = ev.title || "";
+      eventForm.description.value = ev.description || "";
+      eventForm.startsAt.value = (ev.starts_at || "").replace(" ", "T").slice(0, 16);
+      eventForm.endsAt.value = (ev.ends_at || "").replace(" ", "T").slice(0, 16);
+      eventForm.location.value = ev.location || "";
+      eventForm.scrollIntoView({ behavior: "smooth" });
+    });
+  });
+  eventsBox.querySelectorAll("[data-remove]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      try {
+        await api(`/api/me/hotel/events/${btn.dataset.remove}`, { method: "DELETE" });
+        await loadEvents();
+      } catch (err) {
+        showAlert(alertBox, err.message);
+      }
+    });
+  });
+}
+
+eventForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const body = Object.fromEntries(new FormData(eventForm));
+  const eventId = body.eventId;
+  delete body.eventId;
+  try {
+    if (eventId) {
+      await api(`/api/me/hotel/events/${eventId}`, { method: "PUT", body });
+    } else {
+      await api("/api/me/hotel/events", { method: "POST", body });
+    }
+    eventForm.reset();
+    showAlert(alertBox, "Evento salvo.", "success");
+    await loadEvents();
+  } catch (err) {
+    showAlert(alertBox, err.message);
+  }
+});
+
+document.getElementById("event-reset")?.addEventListener("click", () => {
+  eventForm.reset();
+  eventForm.eventId.value = "";
 });
 
 document.querySelectorAll(".settings-nav a").forEach((a) => {

@@ -430,4 +430,64 @@ export function registerCatalogRoutes(app, db) {
       .map((row) => ({ type: "agency", ...row }));
     res.json({ markers: [...hotels, ...guides, ...agencies] });
   });
+
+  const REVIEW_TARGETS = {
+    hotel: (db, id) => db.prepare("SELECT id FROM hotels WHERE id = ?").get(id),
+    guide: (db, id) => db.prepare("SELECT user_id AS id FROM guide_profiles WHERE user_id = ?").get(id),
+    agency: (db, id) => db.prepare("SELECT user_id AS id FROM agency_profiles WHERE user_id = ?").get(id)
+  };
+
+  app.get("/api/reviews", (req, res) => {
+    const type = req.query.target_type;
+    const id = Number(req.query.target_id);
+    if (!REVIEW_TARGETS[type] || !Number.isInteger(id)) {
+      return res.status(400).json({ error: "Destino de avaliação inválido." });
+    }
+    const rows = db
+      .prepare(
+        `SELECT r.id, r.author_id AS authorId, r.rating, r.comment, r.created_at AS createdAt, u.display_name AS author
+         FROM reviews r JOIN users u ON u.id = r.author_id
+         WHERE r.target_type = ? AND r.target_id = ?
+         ORDER BY r.created_at DESC LIMIT 100`
+      )
+      .all(type, id);
+    res.json({
+      reviews: rows,
+      mine: req.user ? rows.find((r) => r.authorId === req.user.id) || null : null
+    });
+  });
+
+  app.post("/api/reviews", requireAuth, (req, res) => {
+    const type = req.body?.targetType;
+    const id = Number(req.body?.targetId);
+    const rating = Number(req.body?.rating);
+    if (!REVIEW_TARGETS[type] || !Number.isInteger(id) || !REVIEW_TARGETS[type](db, id)) {
+      return res.status(404).json({ error: "Destino da avaliação não encontrado." });
+    }
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return res.status(400).json({ error: "A nota deve ser um número entre 1 e 5." });
+    }
+    const comment = clampText(req.body?.comment, 1200) || null;
+    const existing = db
+      .prepare("SELECT id FROM reviews WHERE author_id = ? AND target_type = ? AND target_id = ?")
+      .get(req.user.id, type, id);
+    if (existing) {
+      db.prepare("UPDATE reviews SET rating = ?, comment = ?, created_at = datetime('now') WHERE id = ?").run(
+        rating,
+        comment,
+        existing.id
+      );
+      return res.json({ id: existing.id, updated: true });
+    }
+    const info = db
+      .prepare("INSERT INTO reviews (author_id, target_type, target_id, rating, comment) VALUES (?, ?, ?, ?, ?)")
+      .run(req.user.id, type, id, rating, comment);
+    res.status(201).json({ id: Number(info.lastInsertRowid) });
+  });
+
+  app.delete("/api/reviews/:id", requireAuth, (req, res) => {
+    const info = db.prepare("DELETE FROM reviews WHERE id = ? AND author_id = ?").run(req.params.id, req.user.id);
+    if (!info.changes) return res.status(404).json({ error: "Avaliação não encontrada." });
+    res.json({ ok: true });
+  });
 }

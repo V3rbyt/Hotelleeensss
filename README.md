@@ -39,7 +39,13 @@ Contas demo (senha `Demo1234`):
 | `APP_URL` | URL pública |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | Envio de e-mail para verificação e recuperação |
 
-Sem `GROQ_API_KEY`, o assistente responde com erro claro (código implementado). Sem SMTP, os tokens de verificação/recuperação são devolvidos apenas na resposta da API para desenvolvimento local.
+Sem `GROQ_API_KEY`, o assistente responde com erro claro (código implementado). O envio de e-mail usa nodemailer (`server/utils/mailer.js`): com `SMTP_HOST/USER/PASS` configurados, verificação e recuperação são enviadas de verdade; sem SMTP, os tokens são devolvidos na resposta da API apenas para desenvolvimento local.
+
+## Avaliações e eventos
+
+- `POST /api/reviews` (login + CSRF): cria ou atualiza a avaliação do usuário sobre hotel/guia/agência (nota 1–5). `GET /api/reviews?target_type=&target_id=` lista avaliações; `DELETE /api/reviews/:id` remove a própria.
+- Eventos do hoteleiro: `GET/POST /api/me/hotel/events` e `PUT/DELETE /api/me/hotel/events/:id`, com formulário de cadastro/edição no painel Configurações → Hotel.
+- Verificação de e-mail: página `public/verificar.html` aceita `?token=` do link do e-mail ou código colado manualmente.
 
 ## Banco de dados
 

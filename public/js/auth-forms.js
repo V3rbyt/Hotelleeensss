@@ -5,7 +5,12 @@ const loginForm = document.getElementById("login-form");
 const registerForm = document.getElementById("register-form");
 const recoverForm = document.getElementById("recover-form");
 const resetForm = document.getElementById("reset-form");
+const verifyForm = document.getElementById("verify-form");
 const alertBox = document.getElementById("form-alert");
+
+const urlToken = new URLSearchParams(location.search).get("token");
+if (urlToken && resetForm) resetForm.token.value = urlToken;
+if (urlToken && verifyForm) verifyForm.token.value = urlToken;
 
 function toggleRoleFields() {
   const role = registerForm?.role?.value;
@@ -106,6 +111,17 @@ resetForm?.addEventListener("submit", async (e) => {
       body: { token: resetForm.token.value, password: resetForm.password.value }
     });
     notify(alertBox, data.message, "success");
+  } catch (err) {
+    notify(alertBox, err.message);
+  }
+});
+
+verifyForm?.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  try {
+    await api("/api/auth/verify-email", { method: "POST", body: { token: verifyForm.token.value } });
+    notify(alertBox, "E-mail verificado com sucesso. Redirecionando...", "success");
+    setTimeout(() => (location.href = "/configuracoes.html"), 1200);
   } catch (err) {
     notify(alertBox, err.message);
   }

@@ -79,6 +79,52 @@ export function createApp(db) {
     res.status(201).json({ id: Number(info.lastInsertRowid) });
   });
 
+  const ownerHotelEvents = (req, res) => {
+    const hotel = db.prepare("SELECT id FROM hotels WHERE owner_user_id = ?").get(req.user.id);
+    if (!hotel) {
+      res.status(404).json({ error: "Hotel não encontrado." });
+      return null;
+    }
+    return hotel;
+  };
+
+  app.get("/api/me/hotel/events", requireAuth, requireRole("hotel"), (req, res) => {
+    const hotel = ownerHotelEvents(req, res);
+    if (!hotel) return;
+    const rows = db
+      .prepare("SELECT id, title, description, starts_at, ends_at, location FROM hotel_events WHERE hotel_id = ? ORDER BY starts_at DESC")
+      .all(hotel.id);
+    res.json({ events: rows });
+  });
+
+  app.put("/api/me/hotel/events/:id", requireAuth, requireRole("hotel"), (req, res) => {
+    const hotel = ownerHotelEvents(req, res);
+    if (!hotel) return;
+    const existing = db.prepare("SELECT id FROM hotel_events WHERE id = ? AND hotel_id = ?").get(req.params.id, hotel.id);
+    if (!existing) return res.status(404).json({ error: "Evento não encontrado." });
+    const title = clampText(req.body?.title, 160);
+    if (!title) return res.status(400).json({ error: "Informe o título do evento." });
+    db.prepare(
+      `UPDATE hotel_events SET title = ?, description = ?, starts_at = ?, ends_at = ?, location = ? WHERE id = ?`
+    ).run(
+      title,
+      clampText(req.body?.description, 2000) || null,
+      clampText(req.body?.startsAt, 40) || null,
+      clampText(req.body?.endsAt, 40) || null,
+      clampText(req.body?.location, 160) || null,
+      existing.id
+    );
+    res.json({ ok: true });
+  });
+
+  app.delete("/api/me/hotel/events/:id", requireAuth, requireRole("hotel"), (req, res) => {
+    const hotel = ownerHotelEvents(req, res);
+    if (!hotel) return;
+    const info = db.prepare("DELETE FROM hotel_events WHERE id = ? AND hotel_id = ?").run(req.params.id, hotel.id);
+    if (!info.changes) return res.status(404).json({ error: "Evento não encontrado." });
+    res.json({ ok: true });
+  });
+
   app.use(express.static(publicDir));
   app.use((req, res, next) => {
     if (req.path.startsWith("/api/")) return res.status(404).json({ error: "Rota não encontrada." });

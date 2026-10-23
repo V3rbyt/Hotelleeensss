@@ -41,7 +41,7 @@ button, input, select, textarea { font: inherit; }
   top: 0;
   z-index: 40;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 16px;
   min-height: var(--header-h);
@@ -204,9 +204,26 @@ button, input, select, textarea { font: inherit; }
 .page-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; flex-wrap: wrap; padding-top: 20px; }
 .page-head h1 { font-family: Fraunces, serif; margin: 0; color: var(--teal-900); }
 
-.map-shell { display: grid; grid-template-columns: 320px 1fr; min-height: calc(100vh - var(--header-h)); }
-.map-side { padding: 16px; border-right: 1px solid var(--line); background: var(--white); overflow: auto; }
-#map { min-height: 420px; }
+.map-shell {
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  height: calc(100vh - var(--header-h));
+  height: calc(100dvh - var(--header-h));
+  min-height: 520px;
+}
+.map-side {
+  padding: 24px;
+  border-right: 1px solid var(--line);
+  background: var(--white);
+  overflow: auto;
+}
+.map-side h1 { margin: 0 0 8px; color: var(--teal-900); font-family: Fraunces, serif; }
+.map-side > .meta { margin: 0 0 20px; }
+#map { min-width: 0; min-height: 420px; }
+.map-side #map-search { display: grid; gap: 10px; }
+.map-side #map-search .btn-primary,
+.map-side #map-search .btn-ghost { width: 100%; }
+.map-side #map-status { margin: 12px 0; padding: 0; }
 .leaflet-container { font-family: inherit; }
 .suggest { list-style: none; margin: 8px 0 0; padding: 0; }
 .suggest button {
@@ -313,7 +330,7 @@ button, input, select, textarea { font: inherit; }
 .role-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 
 @media (max-width: 860px) {
-  .site-header { grid-template-columns: auto 1fr auto; }
+  .site-header { grid-template-columns: auto minmax(0, 1fr) auto; }
   .nav-main {
     display: none;
     position: absolute;
@@ -328,6 +345,10 @@ button, input, select, textarea { font: inherit; }
   .nav-main.open { display: flex; }
   .menu-toggle { display: grid; place-items: center; }
   .map-shell, .detail-hero, .settings-layout, .form-grid.two, .footer-grid { grid-template-columns: 1fr; }
-  .map-shell { min-height: auto; }
-  #map { height: 55vh; }
+  .map-shell { height: auto; min-height: 0; }
+  .map-side { border-right: 0; border-bottom: 1px solid var(--line); padding: 20px 16px; }
+  #map { height: 60vh; min-height: 360px; }
 }
+
+.stack { display: flex; flex-direction: column; gap: 12px; margin: 12px 0; }
+.actions { display: flex; gap: 8px; align-items: center; }

@@ -12,6 +12,17 @@ import { hashDocument, last4, randomToken, sha256 } from "../utils/security.js";
 import { getClientIp } from "../utils/security.js";
 import { cookieHeader, datetimeNow } from "../middleware.js";
 import { nowPlusHours, parseJson } from "../db.js";
+import { sendResetEmail, sendVerifyEmail, smtpConfigured } from "../utils/mailer.js";
+
+function respondTokenFallback(res, payload, token, sendFn, to) {
+  if (!smtpConfigured()) {
+    return res.json({ ...payload, configured: false, devToken: token });
+  }
+  sendFn(to, token).catch((err) => {
+    console.error("Falha ao enviar e-mail:", err.message);
+  });
+  return res.json({ ...payload, configured: true, sent: true });
+}
 
 const SESSION_MS = 7 * 24 * 3600;
 
@@ -208,16 +219,18 @@ export function registerAuthRoutes(app, db) {
 
     const csrf = createSession(db, req, res, userId);
     const user = db.prepare("SELECT * FROM users WHERE id = ?").get(userId);
+    const mailSent = smtpConfigured();
+    if (mailSent) sendVerifyEmail(email, verifyToken).catch((err) => console.error("Falha ao enviar verificação:", err.message));
     res.status(201).json({
       user: publicUser(user, getSettings(db, userId)),
       csrfToken: csrf,
       emailVerification: {
         required: true,
-        configured: Boolean(process.env.SMTP_HOST),
-        message: process.env.SMTP_HOST
+        configured: mailSent,
+        message: mailSent
           ? "Enviamos um link de verificação para o seu e-mail."
           : "A verificação de e-mail está pronta, mas o SMTP ainda não foi configurado.",
-        devToken: process.env.SMTP_HOST ? undefined : verifyToken
+        devToken: mailSent ? undefined : verifyToken
       }
     });
   });
@@ -251,11 +264,13 @@ export function registerAuthRoutes(app, db) {
     db.prepare(
       `INSERT INTO email_tokens (user_id, purpose, token_hash, expires_at) VALUES (?, 'reset_password', ?, ?)`
     ).run(user.id, sha256(token), nowPlusHours(2));
-    res.json({
-      ...generic,
-      configured: Boolean(process.env.SMTP_HOST),
-      devToken: process.env.SMTP_HOST ? undefined : token
-    });
+    respondTokenFallback(
+      res,
+      generic,
+      token,
+      sendResetEmail,
+      email
+    );
   });
 
   app.post("/api/auth/reset", (req, res) => {

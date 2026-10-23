@@ -4,6 +4,7 @@ import { randomToken, sha256 } from "../utils/security.js";
 import { requireAuth, datetimeNow } from "../middleware.js";
 import { nowPlusHours } from "../db.js";
 import { getSettings, publicUser } from "./auth.js";
+import { sendChangeEmail, smtpConfigured } from "../utils/mailer.js";
 
 export function registerSettingsRoutes(app, db) {
   app.get("/api/me", requireAuth, (req, res) => {
@@ -77,11 +78,13 @@ export function registerSettingsRoutes(app, db) {
     db.prepare(
       `INSERT INTO email_tokens (user_id, purpose, token_hash, extra, expires_at) VALUES (?, 'change_email', ?, ?, ?)`
     ).run(req.user.id, sha256(token), email, nowPlusHours(24));
+    const mailSent = smtpConfigured();
+    if (mailSent) sendChangeEmail(email, token).catch((err) => console.error("Falha ao enviar confirmação:", err.message));
     res.json({
       ok: true,
       message: "Confirme o novo e-mail para concluir a alteração.",
-      configured: Boolean(process.env.SMTP_HOST),
-      devToken: process.env.SMTP_HOST ? undefined : token
+      configured: mailSent,
+      devToken: mailSent ? undefined : token
     });
   });
 
