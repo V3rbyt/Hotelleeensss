@@ -37,14 +37,13 @@ export function createApp(db) {
       "POST /api/auth/login",
       "POST /api/auth/forgot",
       "POST /api/auth/reset",
-      "POST /api/auth/verify-email",
-      "POST /api/ai/chat"
+      "POST /api/auth/verify-email"
     ];
     if (open.includes(`${req.method} ${req.path}`)) return next();
     return requireCsrf(req, res, next);
   });
 
-  app.get("/api/health", (_req, res) => res.json({ ok: true, name: "LocaLens" }));
+  app.get("/api/health", (_req, res) => res.json({ ok: true, name: "Hotel Lens", version: "1.0.0" }));
 
   app.post("/api/auth/register", limitAuth);
   app.post("/api/auth/login", limitAuth);

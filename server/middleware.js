@@ -122,5 +122,7 @@ export function cookieHeader(name, value, { maxAge, path = "/", httpOnly = true 
   const parts = [`${name}=${encodeURIComponent(value)}`, `Path=${path}`, "SameSite=Lax"];
   if (httpOnly) parts.push("HttpOnly");
   if (maxAge) parts.push(`Max-Age=${maxAge}`);
+  const isProd = process.env.NODE_ENV === "production";
+  if (isProd) parts.push("Secure");
   return parts.join("; ");
 }

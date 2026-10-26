@@ -1,5 +1,9 @@
 import { api, setReturnUrl } from "./api.js";
 
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
 const form = document.getElementById("home-search");
 const status = document.getElementById("home-status");
 const results = document.getElementById("home-results");
@@ -14,7 +18,7 @@ form?.addEventListener("submit", async (e) => {
   try {
     const res = await api(`/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(types)}`);
     if (!res.results.length) {
-      status.textContent = "Nada encontrado no cadastro da LocaLens. Use o mapa para buscar endereços reais no OpenStreetMap.";
+      status.textContent = "Nada encontrado no cadastro da Hotel Lens. Use o mapa para buscar endereços reais no OpenStreetMap.";
       return;
     }
     status.textContent = `${res.total} resultado(s) cadastrados`;
@@ -26,8 +30,9 @@ form?.addEventListener("submit", async (e) => {
             : item.type === "guide"
               ? `/guia.html?id=${item.id}`
               : `/agencia.html?id=${item.id}`;
-        const name = item.name || item.professionalName || item.tradeName;
-        return `<article class="card"><a class="js-open" href="${href}"><div class="card-body"><h3>${name}${item.isDemo ? ' <span class="badge">Demonstração</span>' : ""}</h3><p class="meta">${item.city || item.type}</p></div></a></article>`;
+        const name = esc(item.name || item.professionalName || item.tradeName);
+        const city = esc(item.city || item.type);
+        return `<article class="card"><a class="js-open" href="${href}"><div class="card-body"><h3>${name}${item.isDemo ? ' <span class="badge">Demonstração</span>' : ""}</h3><p class="meta">${city}</p></div></a></article>`;
       })
       .join("");
     results.querySelectorAll(".js-open").forEach((a) => a.addEventListener("click", setReturnUrl));

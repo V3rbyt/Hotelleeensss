@@ -1,5 +1,9 @@
 import { api } from "./api.js";
 
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
 const map = L.map("map").setView([-14.235, -51.9253], 4);
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
@@ -14,7 +18,7 @@ const resetBtn = document.getElementById("map-reset");
 let timer;
 
 function popupHtml(item, extra = "") {
-  return `<strong>${item.label || item.name}</strong><br>${extra}`;
+  return `<strong>${esc(item.label || item.name)}</strong><br>${esc(extra)}`;
 }
 
 async function loadEntities() {
@@ -23,7 +27,7 @@ async function loadEntities() {
     const href = m.type === "hotel" ? `/hotel.html?id=${m.id}` : m.type === "guide" ? `/guia.html?id=${m.id}` : `/agencia.html?id=${m.id}`;
     L.marker([m.lat, m.lng])
       .addTo(markers)
-      .bindPopup(`${popupHtml(m, m.city || "")}<br><a href="${href}">Ver detalhes</a>`);
+      .bindPopup(`${popupHtml(m, esc(m.city || ""))}<br><a href="${href}">Ver detalhes</a>`);
   });
 }
 
@@ -39,7 +43,7 @@ async function search(q) {
     status.textContent = `${data.results.length} sugestão(ões)`;
     const bounds = [];
     data.results.forEach((item, idx) => {
-      const marker = L.marker([item.lat, item.lng]).addTo(markers).bindPopup(popupHtml(item, item.type || ""));
+      const marker = L.marker([item.lat, item.lng]).addTo(markers).bindPopup(popupHtml(item, esc(item.type || "")));
       bounds.push([item.lat, item.lng]);
       const li = document.createElement("li");
       const btn = document.createElement("button");

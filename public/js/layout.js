@@ -13,8 +13,7 @@ export async function mountChrome() {
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
     <a class="settings-trigger" href="${user ? "/configuracoes.html" : "/login.html"}" aria-label="Configurações da conta">${gearSvg}</a>
     <a class="brand" href="/">
-      <img class="brand-mark" src="/assets/logo-mark.svg" alt="">
-      <img src="/assets/logo.svg" alt="LocaLens">
+      <img class="brand-mark" src="/assets/logo.svg" alt="Hotel Lens">
     </a>
     <nav class="nav-main" id="nav-main">
       <a href="/" data-nav="home">Início</a>
@@ -49,7 +48,7 @@ export async function mountChrome() {
   const footer = document.createElement("footer");
   footer.className = "site-footer";
   footer.innerHTML = `<div class="wrap footer-grid">
-    <div><strong>LocaLens</strong><p>Descubra lugares, hotéis, guias e agências. A paleta e a logo atuais são provisórias: a identidade original não estava no workspace.</p></div>
+    <div><strong>Hotel Lens</strong><p>Descubra hotéis, guias turísticos, agências e mapas.</p></div>
     <div><a href="/privacidade.html">Privacidade</a><br><a href="/termos.html">Termos</a></div>
     <div>Mapas: OpenStreetMap / Nominatim</div>
   </div>`;
@@ -69,7 +68,7 @@ function mountAssistant() {
   root.className = "assistant";
   root.innerHTML = `
     <div class="assistant-panel hidden" id="assistant-panel">
-      <div style="padding:12px 14px;font-weight:800;color:#0b3d3a">Assistente LocaLens</div>
+      <div style="padding:12px 14px;font-weight:800;color:#0b3d3a">Assistente Hotel Lens</div>
       <div class="assistant-log" id="assistant-log"></div>
       <form class="assistant-form" id="assistant-form">
         <input name="message" maxlength="1200" placeholder="Pergunte sobre hotéis, guias ou a plataforma" required>

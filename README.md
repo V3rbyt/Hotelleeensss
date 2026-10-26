@@ -1,8 +1,6 @@
-# LocaLens
+# Hotel Lens
 
 Plataforma de turismo em HTML, CSS e JavaScript, com API Node.js (Express) e SQLite.
-
-O repositório original neste workspace estava vazio. A identidade visual abaixo é **provisória** (veja `docs/IDENTIDADE.md`). Não há logo oficial no projeto.
 
 ## Como executar
 
@@ -24,9 +22,9 @@ npm run seed:demo
 
 Contas demo (senha `Demo1234`):
 
-- `demo.guia@localens.invalid`
-- `demo.agencia@localens.invalid`
-- `demo.hotel@localens.invalid`
+- `demo.guia@hotellens.invalid`
+- `demo.agencia@hotellens.invalid`
+- `demo.hotel@hotellens.invalid`
 
 ## Variáveis de ambiente
 
@@ -55,11 +53,11 @@ PostgreSQL/Supabase não estavam configurados no ambiente; o esquema está em `s
 
 ## Mapas
 
-Leaflet + tiles OpenStreetMap. Geocodificação via Nominatim, proxied em `GET /api/map/geocode` (User-Agent, cache e limite de 1 req/s).
+Leaflet + tiles OpenStreetMap. Geocodificação via Nominatim, proxied em `GET /api/map/geocode` (User-Agent, cache, timeout 5s, limite 1MB, 1 req/s).
 
 ## Assistente
 
-`POST /api/ai/chat` no backend. A chave Groq nunca vai ao frontend. O modelo só recebe um recorte do catálogo cadastrado e não deve inventar hotéis, preços ou documentos.
+`POST /api/ai/chat` no backend (protegido por CSRF). A chave Groq nunca vai ao frontend. O modelo só recebe um recorte do catálogo cadastrado e não deve inventar hotéis, preços ou documentos.
 
 ## Testes
 

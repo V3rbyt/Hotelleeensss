@@ -40,6 +40,9 @@ export class RateLimiter {
     this.windowMs = windowMs;
     this.max = max;
     this.hits = new Map();
+    // Periodic cleanup every 5 minutes
+    this._cleanupInterval = setInterval(() => this.prune(), 5 * 60 * 1000);
+    this._cleanupInterval.unref();
   }
 
   check(key) {
@@ -52,12 +55,6 @@ export class RateLimiter {
       entry.count += 1;
     }
     this.hits.set(key, entry);
-    
-    // Prune old entries occasionally
-    if (this.hits.size > 1000 && Math.random() < 0.05) {
-      this.prune();
-    }
-    
     return entry.count <= this.max;
   }
 

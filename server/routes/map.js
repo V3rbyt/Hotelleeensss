@@ -11,9 +11,18 @@ async function nominatimSearch(query) {
   if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   lastNominatim = Date.now();
   const url = `${NOMINATIM}?format=jsonv2&addressdetails=1&limit=8&q=${encodeURIComponent(query)}`;
-  const response = await fetch(url, { headers: { "User-Agent": USER_AGENT, "Accept-Language": "pt-BR,pt,en" } });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  const response = await fetch(url, {
+    headers: { "User-Agent": USER_AGENT, "Accept-Language": "pt-BR,pt,en" },
+    signal: controller.signal
+  });
+  clearTimeout(timeout);
   if (!response.ok) throw new Error("Falha no serviço de geocodificação.");
-  return response.json();
+  // Limit response size to 1MB
+  const text = await response.text();
+  if (text.length > 1048576) throw new Error("Resposta do mapa muito grande.");
+  return JSON.parse(text);
 }
 
 export function registerMapRoutes(app, db) {

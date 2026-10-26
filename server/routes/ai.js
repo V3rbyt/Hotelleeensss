@@ -91,7 +91,11 @@ ${JSON.stringify(catalog)}`;
       if (!text) return res.status(502).json({ error: "O assistente retornou uma resposta vazia." });
       res.json({ reply: text, model });
     } catch (err) {
-      const status = err?.status === 401 ? 502 : 502;
+      let status = 502;
+      if (err && typeof err === "object" && typeof err.status === "number") {
+        status = err.status === 401 ? 502 : 502;
+      }
+      console.error("AI chat error:", err);
       res.status(status).json({
         error: "Não foi possível falar com o assistente agora. Verifique GROQ_API_KEY e GROQ_MODEL."
       });

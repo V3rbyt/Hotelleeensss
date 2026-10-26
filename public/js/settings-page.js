@@ -222,7 +222,7 @@ agencyForm?.addEventListener("submit", async (e) => {
     if (file) {
       const fd = new FormData();
       fd.append("file", file);
-      await api("/api/uploads/avatar", { method: "POST", body: fd });
+      await api("/api/uploads/agency", { method: "POST", body: fd });
     }
     showAlert(alertBox, "Perfil da agência atualizado.", "success");
   } catch (err) {

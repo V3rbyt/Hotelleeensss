@@ -5,7 +5,16 @@ function esc(value) {
   return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;");
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function safeUrl(url) {
+  const u = String(url ?? "").trim();
+  if (!u) return "#";
+  if (/^https?:\/\//i.test(u)) return esc(u);
+  return "#";
 }
 
 const params = new URLSearchParams(location.search);
@@ -111,7 +120,7 @@ function renderHotel(h) {
         <p class="meta">${h.category ? `Categoria: ${esc(h.category)}` : "Categoria não informada"}</p>
         <p class="meta">${h.priceMin != null ? `Preço cadastrado: ${h.priceMin}${h.priceMax != null ? " – " + h.priceMax : ""}` : "Nenhum preço cadastrado"}</p>
         <p>${h.phone ? esc(h.phone) : "Telefone público não informado"}</p>
-        ${h.website ? `<p><a href="${esc(h.website)}" rel="noopener noreferrer">Site oficial</a></p>` : ""}
+        ${h.website ? `<p><a href="${safeUrl(h.website)}" rel="noopener noreferrer">Site oficial</a></p>` : ""}
       </aside>
     </div>
     <nav class="subnav">
@@ -169,7 +178,7 @@ function renderAgency(a) {
         <h1>${esc(a.tradeName)}</h1>
         <p class="meta">${esc(a.legalName)}</p>
         <p>${[a.address, a.city, a.state].filter(Boolean).join(" · ") || "Endereço comercial não publicado"}</p>
-        ${a.website ? `<p><a href="${esc(a.website)}" rel="noopener noreferrer">${esc(a.website)}</a></p>` : ""}
+        ${a.website ? `<p><a href="${safeUrl(a.website)}" rel="noopener noreferrer">${esc(a.website)}</a></p>` : ""}
         ${a.professionalRegistry ? `<p>Registro informado: ${esc(a.professionalRegistry)}</p>` : ""}
       </aside>
     </div>
