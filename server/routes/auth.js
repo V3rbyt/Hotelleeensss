@@ -104,6 +104,9 @@ export function registerAuthRoutes(app, db) {
     let cpfHash = null;
     let cnpjHash = null;
     let docLast4 = null;
+    if (role === "guide" && !body.cpf) {
+      return res.status(400).json({ error: "Guia turístico deve informar CPF." });
+    }
     if (role === "traveler" || role === "guide") {
       if (body.cpf) {
         if (!isValidCpf(body.cpf)) {

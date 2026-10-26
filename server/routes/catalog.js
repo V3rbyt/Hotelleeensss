@@ -247,10 +247,13 @@ export function registerCatalogRoutes(app, db) {
       return 0;
     });
 
+    const totalPages = Math.ceil(results.length / limit) || 1;
+
     res.json({
       total: results.length,
       page,
       pageSize: limit,
+      totalPages,
       results: results.slice(offset, offset + limit)
     });
   });

@@ -29,7 +29,8 @@
         <div class="field"><label>E-mail</label><input type="email" name="email" required></div>
         <div class="field"><label>Senha</label><input type="password" name="password" required minlength="8"></div>
         <div class="field"><label>Telefone</label><input name="phone"></div>
-        <div class="field" data-role-field="traveler,guide"><label>CPF (opcional para viajante)</label><input name="cpf" inputmode="numeric"></div>
+        <div class="field" data-role-field="traveler"><label>CPF (opcional)</label><input name="cpf" inputmode="numeric"></div>
+        <div class="field" data-role-field="guide"><label>CPF <span class="required" aria-hidden="true">*</span></label><input name="cpf" inputmode="numeric" required></div>
         <div class="field hidden" data-role-field="agency,hotel"><label>CNPJ</label><input name="cnpj" required></div>
         <div class="field hidden" data-role-field="guide"><label>Nome profissional</label><input name="professionalName"></div>
         <div class="field hidden" data-role-field="guide"><label>Biografia</label><textarea name="bio"></textarea></div>

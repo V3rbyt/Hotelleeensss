@@ -46,19 +46,35 @@ export class RateLimiter {
     const now = Date.now();
     const entry = this.hits.get(key) || { count: 0, start: now };
     if (now - entry.start > this.windowMs) {
-      entry.count = 0;
+      entry.count = 1;
       entry.start = now;
+    } else {
+      entry.count += 1;
     }
-    entry.count += 1;
     this.hits.set(key, entry);
+    
+    // Prune old entries occasionally
+    if (this.hits.size > 1000 && Math.random() < 0.05) {
+      this.prune();
+    }
+    
     return entry.count <= this.max;
+  }
+
+  prune() {
+    const now = Date.now();
+    for (const [key, entry] of this.hits.entries()) {
+      if (now - entry.start > this.windowMs) {
+        this.hits.delete(key);
+      }
+    }
   }
 }
 
 export function getClientIp(req) {
-  return (
-    req.headers["x-forwarded-for"]?.toString().split(",")[0].trim() ||
-    req.socket?.remoteAddress ||
-    "unknown"
-  );
+  const forwarded = req.headers["x-forwarded-for"];
+  if (forwarded) {
+    return forwarded.split(",")[0].trim();
+  }
+  return req.socket?.remoteAddress || "unknown";
 }
