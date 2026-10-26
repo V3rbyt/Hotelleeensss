@@ -68,7 +68,7 @@ function mountAssistant() {
   root.className = "assistant";
   root.innerHTML = `
     <div class="assistant-panel hidden" id="assistant-panel">
-      <div style="padding:12px 14px;font-weight:800;color:#0b3d3a">Assistente Hotel Lens</div>
+      <div style="padding:12px 14px;font-weight:800;color:var(--brand-900)">Assistente Hotel Lens</div>
       <div class="assistant-log" id="assistant-log"></div>
       <form class="assistant-form" id="assistant-form">
         <input name="message" maxlength="1200" placeholder="Pergunte sobre hotéis, guias ou a plataforma" required>
