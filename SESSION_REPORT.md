@@ -3,17 +3,18 @@
 **Início:** 2026-10-26
 **Branch:** `overnight/hotelleensss-run`
 **Base:** `main` (commit 326b3e5)
+**Fim:** 2026-10-26
 
 ---
 
 ## A) Resumo executivo
-- Estado geral: ⚠️ parcial — múltiplas correções aplicadas, backend ainda precisa de testes
-- Commits feitos: 0 (working tree com alterações não commitadas)
-- Branch usada: `overnight/hotelleensss-run`
+- Estado geral: ✅ saudável — todas as verificações passam, branch publicada no GitHub
+- Commits feitos: 1 (2e73913)
+- Branch usada: `overnight/hotelleensss-run` (push: https://github.com/V3rbyt/Hotelleeensss/pull/new/overnight/hotelleensss-run)
 
 ---
 
-## B) Concluído até agora
+## B) Concluído
 
 ### Logos e identidade visual
 - Substituídos `public/assets/logo.svg` e `public/assets/logo-mark.svg` por versões vetoriais fiéis à imagem `HOTEL LENS.jpeg` (Desktop)
@@ -40,6 +41,20 @@
 
 ### Backend — rotas faltantes (hotel events)
 - Adicionadas em `server/app.js`: `GET/PUT/POST/DELETE /api/me/hotel/events*` (já existiam mas não estavam registradas nas rotas do catálogo)
+
+### Testes e validação
+- `npm test`: 8/8 passam
+- `node --check server/index.js`: sintaxe OK
+- Servidor inicia em http://localhost:3000
+- `/api/health` retorna `{ ok: true, name: "Hotel Lens", version: "1.0.0" }`
+- Página principal carrega com título "Hotel Lens — descubra hotéis, guias turísticos, agências e mapas"
+- Logos servidos corretamente: `/assets/logo.svg` e `/assets/logo-mark.svg`
+- `npm run seed:demo`: cria 3 contas demo com domínio `@hotellens.invalid` e CPF válido para guia
+
+### Documentação
+- `README.md`: renomeado para Hotel Lens, URLs demo atualizadas
+- `.env.example`: documentado (sem mudanças necessárias)
+- `SESSION_REPORT.md` e `OVERNIGHT_PLAN.md` criados
 
 ---
 
