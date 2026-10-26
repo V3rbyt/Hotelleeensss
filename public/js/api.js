@@ -22,6 +22,10 @@ export async function loadSession() {
   return data;
 }
 
+export function getCSRFToken() {
+  return state.csrf;
+}
+
 export function currentUser() {
   return state.user;
 }
@@ -66,4 +70,18 @@ export function fillFormFromQuery(form) {
     if (el.type === "checkbox") el.checked = params.getAll(el.name).includes(el.value) || params.get(el.name) === "on";
     else if (params.has(el.name)) el.value = params.get(el.name);
   }
+}
+
+export function setupCSRF() {
+  const forms = document.querySelectorAll("form");
+  forms.forEach((form) => {
+    const csrfInput = form.querySelector('input[name="_csrf"]');
+    if (!csrfInput) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = "_csrf";
+      input.value = getCSRFToken() || "";
+      form.appendChild(input);
+    }
+  });
 }

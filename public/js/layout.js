@@ -4,6 +4,7 @@ const gearSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stro
 
 export async function mountChrome() {
   await loadSession();
+  setupCSRF();
   const user = currentUser();
   const page = document.body.dataset.page;
   const header = document.createElement("header");
