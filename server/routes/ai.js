@@ -14,7 +14,7 @@ function catalogSnapshot(db) {
     .prepare("SELECT user_id AS id, trade_name, city, destinations, services, travel_types, description FROM agency_profiles")
     .all();
   return {
-    hotels: hotels.map((h) => ({
+    hotels: hotels.slice(0, 30).map((h) => ({
       id: h.id,
       name: h.name,
       city: h.city,
@@ -23,9 +23,9 @@ function catalogSnapshot(db) {
       priceMin: h.price_min,
       priceMax: h.price_max,
       amenities: parseJson(h.amenities, []),
-      summary: clampText(h.description, 220)
+      summary: clampText(h.description, 160)
     })),
-    guides: guides.map((g) => ({
+    guides: guides.slice(0, 30).map((g) => ({
       id: g.id,
       name: g.professional_name,
       city: g.city,
@@ -37,14 +37,14 @@ function catalogSnapshot(db) {
       priceMin: g.price_min,
       priceMax: g.price_max
     })),
-    agencies: agencies.map((a) => ({
+    agencies: agencies.slice(0, 30).map((a) => ({
       id: a.id,
       name: a.trade_name,
       city: a.city,
       destinations: parseJson(a.destinations, []),
       services: parseJson(a.services, []),
       travelTypes: parseJson(a.travel_types, []),
-      summary: clampText(a.description, 220)
+      summary: clampText(a.description, 160)
     }))
   };
 }

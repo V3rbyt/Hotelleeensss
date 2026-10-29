@@ -83,7 +83,19 @@ registerForm?.addEventListener("submit", async (e) => {
       ? ` Token de verificação (SMTP não configurado): ${data.emailVerification.devToken}`
       : "";
     notify(alertBox, (data.emailVerification?.message || "Conta criada.") + extra, "success");
-    setTimeout(() => (location.href = "/configuracoes.html"), 900);
+    setTimeout(async () => {
+      const file = registerForm.avatar?.files?.[0];
+      if (file) {
+        try {
+          const fd = new FormData();
+          fd.append("file", file);
+          await api("/api/uploads/avatar", { method: "POST", credentials: "include", headers: { "Content-Type": "multipart/form-data" }, body: fd });
+        } catch (err) {
+          console.warn("Upload da foto de perfil falhou:", err.message);
+        }
+      }
+      location.href = "/configuracoes.html";
+    }, 900);
   } catch (err) {
     notify(alertBox, err.message);
   }

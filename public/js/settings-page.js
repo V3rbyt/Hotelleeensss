@@ -14,7 +14,9 @@ const sessionsBox = document.getElementById("sessions-box");
 function fill(form, data) {
   if (!form || !data) return;
   Object.entries(data).forEach(([k, v]) => {
-    if (form[k] != null) form[k].value = Array.isArray(v) ? v.join(", ") : v ?? "";
+    if (!(k in form)) continue;
+    if (form[k] == null) return;
+    form[k].value = Array.isArray(v) ? v.join(", ") : v ?? "";
   });
 }
 

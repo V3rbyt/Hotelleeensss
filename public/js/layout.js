@@ -1,11 +1,22 @@
 import { loadSession, currentUser, api, getBackHref, setupCSRF } from "./api.js";
 
+// Migração automática da chave de tema legada localslens_theme -> hotellens_theme
+;(() => {
+  if (typeof localStorage !== "undefined") {
+    const legacy = localStorage.getItem("localslens_theme");
+    if (legacy !== null && localStorage.getItem("hotellens_theme") === null) {
+      localStorage.setItem("hotellens_theme", legacy);
+      localStorage.removeItem("localslens_theme");
+    }
+  }
+})();
+
 const gearSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.6 5.6l1.4 1.4m10 10 1.4 1.4m0-12.8-1.4 1.4m-10 10L5.6 18.4"/></svg>`;
 const assistantIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:24px;height:24px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`;
 
 function brandMarkup(compact = false) {
   return `
-    <img class="brand-mark" src="/assets/logo-mark.svg" alt="Hotel Localslens">
+    <img class="brand-mark" src="/assets/logo-mark.svg" alt="Hotel Lens">
     <span class="brand-word${compact ? " brand-word-sm" : ""}" aria-hidden="true">
       <span class="brand-line1">Hotel</span>
       <span class="brand-line2"><span class="b-locals">Locals</span><span class="b-lens">lens</span></span>
@@ -43,7 +54,7 @@ function initThemeToggle(header) {
     const isDark = document.documentElement.getAttribute("data-theme") === "dark";
     const newTheme = isDark ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem("localslens_theme", newTheme);
+    localStorage.setItem("hotellens_theme", newTheme);
 
     // Update icon for all theme toggles in document
     const allToggles = document.querySelectorAll("#themeToggle");
@@ -62,7 +73,7 @@ export async function mountChrome() {
   header.className = "site-header";
   header.innerHTML = `
     <a class="skip-link" href="#conteudo">Ir para o conteúdo</a>
-    <a class="brand" href="/index.html" aria-label="Hotel Localslens — página inicial">${brandMarkup()}</a>
+    <a class="brand" href="/index.html" aria-label="Hotel Lens — página inicial">${brandMarkup()}</a>
     <nav class="nav-main" id="nav-main" aria-label="Navegação principal">
       <a href="/index.html" data-nav="home">Início</a>
       <a href="/hoteis.html" data-nav="hoteis">Hotéis</a>
@@ -136,7 +147,7 @@ function mountFooter() {
   footer.className = "site-footer";
   footer.innerHTML = `<div class="wrap footer-grid">
     <div class="footer-brand">
-      <a class="brand" href="/index.html" aria-label="Hotel Localslens">${brandMarkup(true)}</a>
+      <a class="brand" href="/index.html" aria-label="Hotel Lens">${brandMarkup(true)}</a>
       <p>Descubra hotéis, guias turísticos, agências e mapas — com a lente de quem vive o lugar.</p>
     </div>
     <nav class="footer-links" aria-label="Links rápidos">
@@ -156,7 +167,7 @@ function mountFooter() {
     </nav>
     <div class="footer-note">
       <p>Endereços e atrações: &copy; OpenStreetMap / Nominatim.</p>
-      <p>© ${new Date().getFullYear()} Hotel Localslens</p>
+      <p>© ${new Date().getFullYear()} Hotel Lens</p>
     </div>
   </div>`;
   document.body.append(footer);
@@ -175,7 +186,7 @@ function mountAssistant() {
   root.className = "assistant";
   root.innerHTML = `
     <div class="assistant-panel hidden" id="assistant-panel">
-      <div class="assistant-head">Assistente Hotel Localslens</div>
+      <div class="assistant-head">Assistente Hotel Lens</div>
       <div class="assistant-log" id="assistant-log"></div>
       <form class="assistant-form" id="assistant-form">
         <input name="message" maxlength="1200" placeholder="Pergunte sobre hotéis, guias ou a plataforma" required>

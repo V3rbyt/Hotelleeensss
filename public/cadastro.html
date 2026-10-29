@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <script>(function(){const t=localStorage.getItem("localslens_theme")||"light";document.documentElement.setAttribute("data-theme",t)})();</script>
+  <script>(function(){const t=localStorage.getItem("hotellens_theme")||"light";document.documentElement.setAttribute("data-theme",t)})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Cadastro — Hotel Localslens</title>
+  <title>Cadastro — Hotel Lens</title>
   <link rel="icon" href="/assets/logo-mark.svg">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Manrope:wght@400;600;700&display=swap">
   <link rel="stylesheet" href="/css/styles.css">
@@ -57,6 +57,7 @@
         <div class="field hidden" data-role-field="hotel"><label>Comodidades</label><input name="amenities"></div>
         <div class="field hidden" data-role-field="hotel"><label>Acessibilidade</label><input name="accessibility"></div>
         <div class="field hidden" data-role-field="hotel"><label>E-mail comercial público</label><input name="publicEmail"></div>
+        <div class="field" data-role-field="traveler,guide,agency,hotel"><label>Foto / Logo da conta (opcional)</label><input type="file" name="avatar" accept="image/jpeg,image/png,image/webp"></div>
         <label class="chip"><input type="checkbox" name="acceptTerms" required> Aceito os <a href="/termos.html">termos</a></label>
         <label class="chip"><input type="checkbox" name="acceptPrivacy" required> Aceito a <a href="/privacidade.html">política de privacidade</a></label>
         <button class="btn-primary" type="submit">Cadastrar</button>

@@ -18,7 +18,7 @@ test("e-mail e senha", () => {
   assert.equal(isEmail("x"), false);
   assert.equal(passwordStrength("short"), "A senha deve ter pelo menos 8 caracteres.");
   assert.equal(passwordStrength("semnumero"), "A senha deve combinar letras e números.");
-  assert.equal(passwordStrength("Senha123"), null);
+  assert.equal(passwordStrength("Senha1234"), null);
 });
 
 test("listas", () => {

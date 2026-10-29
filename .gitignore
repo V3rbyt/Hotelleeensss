@@ -7,3 +7,6 @@ public/uploads/*
 !public/uploads/.gitkeep
 *.log
 .DS_Store
+stderr.txt
+stdout.txt
+

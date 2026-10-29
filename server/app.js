@@ -125,9 +125,9 @@ export function createApp(db) {
   });
 
   app.use(express.static(publicDir));
-  app.use((req, res, next) => {
+  app.use((req, res, _next) => {
     if (req.path.startsWith("/api/")) return res.status(404).json({ error: "Rota não encontrada." });
-    next();
+    res.status(404).sendFile(path.join(publicDir, "404.html"));
   });
   app.use((err, _req, res, _next) => {
     if (err.status === 400 || err.type === "entity.parse.failed") {

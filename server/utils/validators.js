@@ -14,6 +14,11 @@ export function passwordStrength(password) {
   if (!/[A-Za-z]/.test(value) || !/\d/.test(value)) {
     return "A senha deve combinar letras e números.";
   }
+  // Bloco de senhas fracas comuns
+  const weakPasswords = ["12345678", "password1", "senha123", "qwerty123", "admin123", "123456789"];
+  if (weakPasswords.includes(value.toLowerCase())) {
+    return "Esta senha é muito comum e fraca. Escolha uma senha mais segura.";
+  }
   return null;
 }
 
@@ -83,3 +88,5 @@ export function parseListParam(value) {
 }
 
 export const ACCOUNT_ROLES = ["traveler", "guide", "agency", "hotel"];
+
+export { sanitizeUrl } from "./security.js";

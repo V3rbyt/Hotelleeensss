@@ -27,8 +27,8 @@ const guideId = Number(guide.lastInsertRowid);
 db.prepare("INSERT INTO user_pii (user_id, cpf_hash, document_last4) VALUES (?, ?, ?)").run(guideId, cpfHash, cpfLast4);
 db.prepare("INSERT INTO account_settings (user_id, public_bio) VALUES (?, 1)").run(guideId);
 db.prepare(
-  `INSERT INTO guide_profiles (user_id, professional_name, bio, languages, specialties, regions, tour_types, services, qualifications, city, state, is_demo)
-   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`
+  `INSERT INTO guide_profiles (user_id, professional_name, bio, languages, specialties, regions, tour_types, services, qualifications, city, state, lat, lng, is_demo)
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`
 ).run(
   guideId,
   "Ana Demo",
@@ -39,8 +39,10 @@ db.prepare(
   JSON.stringify(["Caminhada"]),
   JSON.stringify(["Passeio urbano de demonstração"]),
   "Nenhuma qualificação real cadastrada.",
-  null,
-  null
+  "Belo Horizonte",
+  "MG",
+  -19.9167,
+  -43.9345
 );
 
 const agency = db
@@ -52,13 +54,17 @@ const agency = db
 const agencyId = Number(agency.lastInsertRowid);
 db.prepare("INSERT INTO account_settings (user_id) VALUES (?)").run(agencyId);
 db.prepare(
-  `INSERT INTO agency_profiles (user_id, legal_name, trade_name, description, destinations, services, travel_types, is_demo)
-   VALUES (?, ?, ?, ?, ?, ?, ?, 1)`
+  `INSERT INTO agency_profiles (user_id, legal_name, trade_name, description, city, state, lat, lng, destinations, services, travel_types, is_demo)
+   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`
 ).run(
   agencyId,
   "Agência Demo Ltda (amostra)",
   "Agência Demo Hotel Lens",
   "Cadastro fictício apenas para testar listagens. Não é uma agência real.",
+  "Belo Horizonte",
+  "MG",
+  -19.9167,
+  -43.9345,
   JSON.stringify(["Destino de amostra"]),
   JSON.stringify(["Roteiros personalizados (amostra)"]),
   JSON.stringify(["Lazer"])
@@ -74,19 +80,27 @@ const hotelUserId = Number(hotelUser.lastInsertRowid);
 db.prepare("INSERT INTO account_settings (user_id) VALUES (?)").run(hotelUserId);
 const hotel = db
   .prepare(
-    `INSERT INTO hotels (owner_user_id, name, description, city, category, amenities, accessibility, is_demo)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 1)`
+    `INSERT INTO hotels (owner_user_id, name, description, address, neighborhood, city, state, lat, lng, category, amenities, accessibility, is_demo)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`
   )
   .run(
     hotelUserId,
     "Hotel Demo Hotel Lens",
-    "Estabelecimento de AMOSTRA para testar a página de detalhes. Não possui endereço, preço, avaliação nem disponibilidade reais.",
-    null,
+    "Estabelecimento de AMOSTRA para testar a página de detalhes. Não possui preço, avaliação nem disponibilidade reais.",
+    "Rua de Amostra, 123",
+    "Centro",
+    "Belo Horizonte",
+    "MG",
+    -19.9167,
+    -43.9345,
     "Amostra",
     JSON.stringify(["Wi-Fi (amostra)"]),
     JSON.stringify(["Informação de acessibilidade não verificada"])
   );
 const hotelId = Number(hotel.lastInsertRowid);
+db.prepare(
+  `INSERT INTO hotel_images (hotel_id, url, alt) VALUES (?, ?, ?)`
+).run(hotelId, "/assets/logo-mark.svg", "Imagem de amostra");
 db.prepare(
   `INSERT INTO hotel_events (hotel_id, title, description, location) VALUES (?, ?, ?, ?)`
 ).run(

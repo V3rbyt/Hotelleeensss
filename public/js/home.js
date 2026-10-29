@@ -18,7 +18,7 @@ form?.addEventListener("submit", async (e) => {
   try {
     const res = await api(`/api/search?q=${encodeURIComponent(q)}&types=${encodeURIComponent(types)}`);
     if (!res.results.length) {
-      status.textContent = "Nada encontrado no cadastro da Hotel Localslens. Use o mapa para buscar endereços reais no OpenStreetMap.";
+      status.textContent = "Nada encontrado no cadastro da Hotel Lens. Use o mapa para buscar endereços reais no OpenStreetMap.";
       return;
     }
     status.textContent = `${res.total} resultado(s) cadastrados`;

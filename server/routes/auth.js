@@ -6,7 +6,8 @@ import {
   isValidCnpj,
   isValidCpf,
   parseJsonArray,
-  passwordStrength
+  passwordStrength,
+  sanitizeUrl
 } from "../utils/validators.js";
 import { hashDocument, last4, randomToken, sha256 } from "../utils/security.js";
 import { getClientIp } from "../utils/security.js";
@@ -190,7 +191,7 @@ export function registerAuthRoutes(app, db) {
         JSON.stringify(parseJsonArray(body.destinations)),
         JSON.stringify(parseJsonArray(body.services)),
         JSON.stringify(parseJsonArray(body.travelTypes)),
-        clampText(body.website, 200) || null,
+        sanitizeUrl(clampText(body.website, 200)) || null,
         clampText(body.professionalRegistry, 80) || null
       );
     }
@@ -209,7 +210,7 @@ export function registerAuthRoutes(app, db) {
         clampText(body.category, 80) || null,
         JSON.stringify(parseJsonArray(body.amenities)),
         JSON.stringify(parseJsonArray(body.accessibility)),
-        clampText(body.website, 200) || null,
+        sanitizeUrl(clampText(body.website, 200)) || null,
         clampText(body.phone, 30) || null,
         clampText(body.publicEmail, 180) || null
       );

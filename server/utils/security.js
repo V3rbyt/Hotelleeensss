@@ -35,12 +35,33 @@ export function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+/**
+ * Valida e sanitiza URLs para prevenir XSS via links maliciosos.
+ * Permite: strings vazias, caminhos relativos seguros iniciados com `/`, ou URLs completas com http/https.
+ * Rejeita: javascript:, data:, vbscript:, etc.
+ */
+export function sanitizeUrl(url) {
+  const str = String(url || "").trim();
+  if (!str) return "";
+  // Verifica para javascript:, data:, vbscript:, etc.
+  if (/^(javascript|vbscript|data):/i.test(str)) return "";
+  // Verifica para URL relativa segura (começa com /)
+  if (/^\//.test(str)) return str;
+  // Verifica para URL absoluta com http/https
+  try {
+    const parsed = new URL(str);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return "";
+    return str;
+  } catch {
+    return "";
+  }
+}
+
 export class RateLimiter {
   constructor({ windowMs, max }) {
     this.windowMs = windowMs;
     this.max = max;
     this.hits = new Map();
-    // Periodic cleanup every 5 minutes
     this._cleanupInterval = setInterval(() => this.prune(), 5 * 60 * 1000);
     this._cleanupInterval.unref();
   }

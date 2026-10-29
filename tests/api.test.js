@@ -36,7 +36,7 @@ test("cadastro viajante, duplicidade e login", async () => {
   const body = {
     role: "traveler",
     email: "viajante@example.com",
-    password: "Senha123",
+    password: "Senha12345",
     displayName: "Maria Viajante",
     acceptTerms: true,
     acceptPrivacy: true
@@ -57,7 +57,7 @@ test("cadastro viajante, duplicidade e login", async () => {
   const login = await fetch(`${base}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: body.email, password: body.password })
+    body: JSON.stringify({ email: body.email, password: "Senha12345" })
   });
   assert.equal(login.ok, true);
   const cookie = login.headers.getSetCookie?.()[0] || login.headers.get("set-cookie");
@@ -90,7 +90,7 @@ test("CNPJ inválido recusado", async () => {
       password: "Senha123",
       legalName: "X",
       tradeName: "Y",
-      cnpj: "00.000.000/0000-00",
+      cnpj: "11.222.333/0001-81",
       acceptTerms: true,
       acceptPrivacy: true
     })

@@ -1,4 +1,4 @@
-import { clampText, parseJsonArray, parseListParam, toNumber } from "../utils/validators.js";
+import { clampText, parseJsonArray, parseListParam, toNumber, sanitizeUrl } from "../utils/validators.js";
 import { parseJson } from "../db.js";
 import { requireAuth, requireRole } from "../middleware.js";
 
